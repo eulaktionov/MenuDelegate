@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using static System.Console;
 
+// можно сделать базовый класс 
+// class Param {}
+// и от него наследовать 
+// class ParamInt : class Param
+// { public int intParam {get; set;}}
+// вместо object будет Param
+
 namespace StoreLib
 {
+    public class Param { }
     public class Menu
     {
         public class Command
@@ -12,10 +20,10 @@ namespace StoreLib
             public const int SeparatorValue = 99;
             public string Text { get; }
             public int Value { get; }
-            public Action<object> method;
-            public Func<object> getParam;
+            public Action<Param> method;
+            public Func<Param> getParam;
             public Command(string text, int value, 
-                Action<object> method, Func<object> getParam) 
+                Action<Param> method, Func<Param> getParam) 
                 => (Text, Value, this.method, this.getParam) 
                 = (text, value, method, getParam);
         }
@@ -65,7 +73,7 @@ namespace StoreLib
             {
                 return false;
             }
-            object param = command.getParam == null ? null 
+            Param? param = command.getParam == null ? null 
                 : command.getParam();
             command.method?.Invoke(param);
             return true;

@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 
 using StoreLib;
 using static System.Console;
@@ -6,19 +7,21 @@ using static System.Console;
 
 WriteLine("Menu with Delegate");
 int x = 10;
-object GetParam2()
+Param GetParam2()
 {
-    return x;
+    return new ParamInt() { value = x };
 }
-object GetParam3()
+Param GetParam3()
 {
-    return Menu.GetString("Enter word: ");
+    return new ParamStr()
+    { value = Menu.GetString("Enter word: ") };
 }
-object GetParam4()
+Param GetParam4()
 {
     string name = Menu.GetString("Enter name: ");
     int age = Menu.GetInt("Enter age: ");
-    return new Person(name, age);
+    return new ParamPerson
+    { value = new Person(name, age) };
 }
 
 Func<Menu.Command[]> initMenu = () => new Menu.Command[]
@@ -32,26 +35,28 @@ Func<Menu.Command[]> initMenu = () => new Menu.Command[]
 Menu menu = new Menu(initMenu);
 menu.Run();
 
-void Method1(object par1 = null)
+void Method1(Param par = null)
 {
     WriteLine("Method1");
     string some = "Enter some: ".Read();
     Console.WriteLine(some);
 }
-void Method2(object number)
+void Method2(Param paramInt)
 {
     WriteLine("Method2");
-    Console.WriteLine((int)number);
+    int number = (paramInt as ParamInt).value;
+    Console.WriteLine(number);
 }
-void Method3(object word)
+void Method3(Param paramStr)
 {
     WriteLine("Method3");
-    Console.WriteLine((string)word);
+    string word = (paramStr as ParamStr).value;
+    Console.WriteLine(word);
 }
-void Method4(object person)
+void Method4(Param paramPerson)
 {
     WriteLine("Method4");
-    Person p = person as Person;
+    Person p = (paramPerson as ParamPerson).value;
     Console.WriteLine($"{p.name} : {p.age}");
 }
 
@@ -63,6 +68,10 @@ enum AppCommand
     Command4,
     Exit = 0
 };
+
+class ParamInt : Param { public int value { get; set; } }
+class ParamStr : Param { public string value { get; set; } }
+class ParamPerson : Param { public Person value { get; set; } }
 
 class Person
 {
