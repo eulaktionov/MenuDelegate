@@ -7,16 +7,16 @@ using static System.Console;
 
 WriteLine("Menu with Delegate");
 int x = 10;
-Param GetParam2()
+ParamInt GetParam2()
 {
     return new ParamInt() { value = x };
 }
-Param GetParam3()
+ParamStr GetParam3()
 {
     return new ParamStr()
     { value = Menu.GetString("Enter word: ") };
 }
-Param GetParam4()
+ParamPerson GetParam4()
 {
     string name = Menu.GetString("Enter name: ");
     int age = Menu.GetInt("Enter age: ");
